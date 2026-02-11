@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Top100String.Tests/Top100String.Tests.csproj" />
+  <Project Path="Top100String/Top100String.csproj" />
+</Solution>
