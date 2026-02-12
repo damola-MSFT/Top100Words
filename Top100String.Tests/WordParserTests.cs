@@ -34,23 +34,23 @@ public class WordParserTests
     [Fact]
     public void ParseWords_PunctuationStripping()
     {
-        // §9: "it's a well-known fact" ? it, s, a, well, known, fact
+        // ï¿½9: "it's a well-known fact" ? it, s, a, well, known, fact
         var words = Collect(WordParser.ParseWords("it's a well-known fact"));
         Assert.Equal(new[] { "it", "s", "a", "well", "known", "fact" }, words);
     }
 
     [Fact]
-    public void ParseWords_DigitsAreDelimiters()
+    public void ParseWords_DigitsArePartOfWords()
     {
         var words = Collect(WordParser.ParseWords("abc123def"));
-        Assert.Equal(new[] { "abc", "def" }, words);
+        Assert.Equal(new[] { "abc123def" }, words);
     }
 
     [Fact]
     public void ParseWords_MixedPunctuationAndDigits()
     {
         var words = Collect(WordParser.ParseWords("hello...world!! 42 test"));
-        Assert.Equal(new[] { "hello", "world", "test" }, words);
+        Assert.Equal(new[] { "hello", "world", "42", "test" }, words);
     }
 
     [Fact]
@@ -72,8 +72,7 @@ public class WordParserTests
     public void ParseWords_TabsNewlineChars()
     {
         var words = Collect(WordParser.ParseWords("word1\tword2"));
-        // digits are delimiters, so: "word", "word"
-        Assert.Equal(new[] { "word", "word" }, words);
+        Assert.Equal(new[] { "word1", "word2" }, words);
     }
 
     private static string[] Collect(WordParser.WordEnumerable enumerable)

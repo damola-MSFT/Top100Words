@@ -1,4 +1,4 @@
-# Top 100 Frequent Words Stream — Specification
+# Top 100 Frequent Words Stream ï¿½ Specification
 
 ## 1. Problem Statement
 
@@ -12,10 +12,10 @@ Write a C# console application that reads a **stream of text** and continuously 
 
 | Term | Definition |
 |---|---|
-| **Word** | A maximal contiguous sequence of **ASCII letters** (`a-z`, `A-Z`). Digits, punctuation, whitespace, and newlines are all treated as delimiters (not part of any word). All comparisons are **case-insensitive** (e.g., `"The"` and `"the"` are the same word). |
-| **Stream** | Text arriving incrementally — modelled as a `TextReader` (could be `Console.In`, a `StreamReader` over a file, or a `StringReader` for tests). The solution must process text **line-by-line** without loading the entire input into memory. |
+| **Word** | A maximal contiguous sequence of **ASCII letters** (`a-z`, `A-Z`) **and digits** (`0-9`). Whitespace, punctuation, and newlines are all treated as delimiters (not part of any word). All comparisons are **case-insensitive** (e.g., `"The"` and `"the"` are the same word). |
+| **Stream** | Text arriving incrementally ï¿½ modelled as a `TextReader` (could be `Console.In`, a `StreamReader` over a file, or a `StringReader` for tests). The solution must process text **line-by-line** without loading the entire input into memory. |
 | **Frequency** | The total number of occurrences of a word observed so far. |
-| **Top-K (K=100)** | The K words with the highest frequency. Ties may be broken arbitrarily (or alphabetically as a secondary sort — implementor's choice). |
+| **Top-K (K=100)** | The K words with the highest frequency. Ties may be broken arbitrarily (or alphabetically as a secondary sort ï¿½ implementor's choice). |
 
 ---
 
@@ -23,11 +23,11 @@ Write a C# console application that reads a **stream of text** and continuously 
 
 | ID | Requirement |
 |---|---|
-| **FR-1** | Parse incoming text into words using the definition above (strip punctuation, digits, whitespace). |
+| **FR-1** | Parse incoming text into words using the definition above (strip punctuation and whitespace; include digits in words). |
 | **FR-2** | Maintain a **word-frequency map** that is updated as each word is parsed. |
 | **FR-3** | Maintain a **min-heap of size ? 100** that always contains the current top-100 most frequent words. |
 | **FR-4** | Expose a method `GetTop100()` that returns the current top-100 words sorted in **descending frequency order** in O(K log K) time. |
-| **FR-5** | After all input is consumed, print the top-100 list to `Console.Out` in the format: `<rank>. <word> — <count>` (one per line). |
+| **FR-5** | After all input is consumed, print the top-100 list to `Console.Out` in the format: `<rank>. <word> ï¿½ <count>` (one per line). |
 
 ---
 
@@ -75,7 +75,7 @@ GetTop100() ? HeapEntry[] sorted descending
 record struct HeapEntry(string Word, int Frequency);
 ```
 
-### 5.3 Custom Min-Heap — `MinHeap<T>`
+### 5.3 Custom Min-Heap ï¿½ `MinHeap<T>`
 
 Implement a binary min-heap backed by an array with the following operations:
 
@@ -102,15 +102,15 @@ The heap should accept a `Comparison<T>` delegate so it can be reused.
 | `void ProcessWord(string word)` | Lowercases the word, increments its count in the frequency map, and updates the min-heap (insert if heap has room, or replace-min if the word's new frequency exceeds the heap's minimum). |
 | `void ProcessLine(string line)` | Parses words from a line and calls `ProcessWord` for each. |
 | `void ProcessStream(TextReader reader)` | Reads lines from the reader until EOF, calling `ProcessLine`. |
-| `(string Word, int Count)[] GetTop100()` | Extracts heap contents and sorts them descending by frequency (hand-written sort — e.g., heap-sort or insertion-sort on ?100 items). |
+| `(string Word, int Count)[] GetTop100()` | Extracts heap contents and sorts them descending by frequency (hand-written sort ï¿½ e.g., heap-sort or insertion-sort on ?100 items). |
 
 ### 5.5 Word Parsing Logic
 
 ```
 For each character c in the line:
-    if c is an ASCII letter (a-z or A-Z):
-        append lowercase of c to current word buffer
-    else:                                         // digit, punctuation, whitespace, etc.
+    if c is an ASCII letter (a-z or A-Z) or digit (0-9):
+        append lowercase of c to current word buffer (digits remain unchanged)
+    else:                                         // punctuation, whitespace, etc.
         if buffer is non-empty:
             yield the buffered word
             reset buffer
@@ -127,7 +127,7 @@ When `ProcessWord` is called with a word whose updated frequency is `f`:
 
 1. **Word is already in the heap** (`heap.ContainsKey(word)`):
    - Call `heap.UpdateKey(word, new HeapEntry(word, f))`.
-   - Because frequency can only *increase*, the entry's value grows, so it can only violate the min-heap property **downward** — only a sift-down is ever needed.
+   - Because frequency can only *increase*, the entry's value grows, so it can only violate the min-heap property **downward** ï¿½ only a sift-down is ever needed.
 
 2. **Word is NOT in the heap:**
    - If `heap.Count < 100`: call `heap.Insert(new HeapEntry(word, f))`.
@@ -142,12 +142,12 @@ This "indexed min-heap" approach keeps per-word updates O(log K) and avoids resc
 
 ```
 Top100String/
-??? Program.cs                   — Entry point: wire up TextReader ? WordFrequencyTracker ? print results
-??? WordParser.cs                — Static helper: IEnumerable<string> ParseWords(string line)
-??? MinHeap.cs                   — Generic min-heap with index tracking
-??? HeapEntry.cs                 — record struct HeapEntry(string Word, int Frequency)
-??? WordFrequencyTracker.cs      — Orchestrator (frequency map + heap)
-??? Top100String.csproj          — .NET 8 console app (no extra packages)
+??? Program.cs                   ï¿½ Entry point: wire up TextReader ? WordFrequencyTracker ? print results
+??? WordParser.cs                ï¿½ Static helper: IEnumerable<string> ParseWords(string line)
+??? MinHeap.cs                   ï¿½ Generic min-heap with index tracking
+??? HeapEntry.cs                 ï¿½ record struct HeapEntry(string Word, int Frequency)
+??? WordFrequencyTracker.cs      ï¿½ Orchestrator (frequency map + heap)
+??? Top100String.csproj          ï¿½ .NET 8 console app (no extra packages)
 ```
 
 ---
@@ -159,17 +159,17 @@ Top100String/
 2. Create a WordFrequencyTracker.
 3. Call tracker.ProcessStream(reader).
 4. Call tracker.GetTop100().
-5. Print each entry: "  1. the — 4523"
+5. Print each entry: "  1. the ï¿½ 4523"
 ```
 
 ### Sample Output
 
 ```
-  1. the — 4523
-  2. of — 3012
-  3. and — 2890
+  1. the ï¿½ 4523
+  2. of ï¿½ 3012
+  3. and ï¿½ 2890
   ...
-100. still — 42
+100. still ï¿½ 42
 ```
 
 ---
@@ -185,6 +185,8 @@ Top100String/
 | **More than 100 unique words** | 200 words | Only top 100 by frequency returned. |
 | **Case insensitivity** | `"Hello HELLO hello"` | `[("hello", 3)]`. |
 | **Punctuation stripping** | `"it's a well-known fact"` | Words: `it`, `s`, `a`, `well`, `known`, `fact`. |
+| **Digits in words** | `"abc123def"` | Returns `[("abc123def", 1)]`. |
+| **Pure digit words** | `"123 456"` | Returns `[("123", 1), ("456", 1)]`. |
 | **Large stream** | 1 million+ words | Completes in reasonable time; memory ? unique words. |
 | **Tie-breaking** | Multiple words same freq | All present; order among ties is stable or alphabetical. |
 
@@ -197,4 +199,4 @@ Top100String/
 - [ ] Running `dotnet run -- path/to/largefile.txt` works for file input.
 - [ ] No LINQ, no `PriorityQueue`, no `SortedSet`, no external NuGet packages.
 - [ ] The min-heap and sorting are hand-implemented.
-- [ ] Unit tests (if added) cover the cases in §9.
+- [ ] Unit tests (if added) cover the cases in ï¿½9.
