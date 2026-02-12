@@ -3,8 +3,8 @@ using System.Collections;
 namespace Top100String;
 
 /// <summary>
-/// Character-by-character word extraction. Only ASCII letters form words;
-/// everything else is a delimiter. Words are yielded in lowercase.
+/// Character-by-character word extraction. ASCII letters and digits form words;
+/// whitespace, punctuation, and returns are delimiters. Words are yielded in lowercase.
 /// </summary>
 public static class WordParser
 {
@@ -43,8 +43,8 @@ public static class WordParser
         {
             int len = _line.Length;
 
-            // Skip non-letter characters
-            while (_pos < len && !IsAsciiLetter(_line[_pos]))
+            // Skip non-word characters (not letter or digit)
+            while (_pos < len && !IsWordChar(_line[_pos]))
                 _pos++;
 
             if (_pos >= len)
@@ -52,8 +52,8 @@ public static class WordParser
 
             int start = _pos;
 
-            // Consume letter characters
-            while (_pos < len && IsAsciiLetter(_line[_pos]))
+            // Consume word characters (letters and digits)
+            while (_pos < len && IsWordChar(_line[_pos]))
                 _pos++;
 
             _current = ToLower(_line, start, _pos - start);
@@ -65,6 +65,12 @@ public static class WordParser
 
         private static bool IsAsciiLetter(char c)
             => (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+
+        private static bool IsDigit(char c)
+            => c >= '0' && c <= '9';
+
+        private static bool IsWordChar(char c)
+            => IsAsciiLetter(c) || IsDigit(c);
 
         private static string ToLower(string source, int start, int length)
         {

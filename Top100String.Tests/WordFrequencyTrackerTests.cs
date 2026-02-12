@@ -2,7 +2,7 @@ namespace Top100String.Tests;
 
 public class WordFrequencyTrackerTests
 {
-    // ---- §9 test cases ----
+    // ---- ï¿½9 test cases ----
 
     [Fact]
     public void EmptyStream_ReturnsEmptyArray()
@@ -83,7 +83,7 @@ public class WordFrequencyTrackerTests
 
         var top = tracker.GetTop100();
         Assert.Equal(3, top.Length);
-        // All frequency 1 — should be alphabetical
+        // All frequency 1 ï¿½ should be alphabetical
         Assert.Equal("apple", top[0].Word);
         Assert.Equal("banana", top[1].Word);
         Assert.Equal("cherry", top[2].Word);
@@ -163,7 +163,7 @@ public class WordFrequencyTrackerTests
         // The top entry should have 200 occurrences
         Assert.Equal(200, top[0].Count);
 
-        // No low-frequency word should appear — all top words start with "high"
+        // No low-frequency word should appear ï¿½ all top words start with "high"
         for (int i = 0; i < top.Length; i++)
             Assert.StartsWith("high", top[i].Word);
     }
@@ -212,7 +212,7 @@ public class WordFrequencyTrackerTests
     }
 
     [Fact]
-    public void DigitsStrippedFromInput()
+    public void DigitsIncludedInWords()
     {
         var tracker = new WordFrequencyTracker();
         tracker.ProcessStream(new StringReader("abc123def 456 ghi"));
@@ -223,8 +223,8 @@ public class WordFrequencyTrackerTests
             words.Add(top[i].Word);
 
         Assert.Equal(3, top.Length);
-        Assert.Contains("abc", words);
-        Assert.Contains("def", words);
+        Assert.Contains("abc123def", words);
+        Assert.Contains("456", words);
         Assert.Contains("ghi", words);
     }
 

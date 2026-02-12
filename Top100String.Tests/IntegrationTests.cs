@@ -14,7 +14,7 @@ public class IntegrationTests
     {
         // Build a stream with known frequencies:
         //   top word #0 appears 1000 times, #1 appears 999 times, ..., #99 appears 901 times.
-        //   Then 500 filler words appear once each — none should make the top 100.
+        //   Then 500 filler words appear once each ï¿½ none should make the top 100.
         var sb = new StringBuilder();
 
         string topZero = ToLetterWord("top", 0);
@@ -104,7 +104,7 @@ public class IntegrationTests
     public void FrequencyUpdates_WordRisesIntoTop100()
     {
         // Start with 100 words at frequency 10 each.
-        // Then a new word "newcomer" gets fed 11 times — it should displace one.
+        // Then a new word "newcomer" gets fed 11 times ï¿½ it should displace one.
         var tracker = new WordFrequencyTracker();
 
         var sb = new StringBuilder();
@@ -159,13 +159,19 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void OnlyDigits_ReturnsEmpty()
+    public void OnlyDigits_ReturnsDigitsAsWords()
     {
         var tracker = new WordFrequencyTracker();
         tracker.ProcessStream(new StringReader("123 456 789 0"));
 
         var top = tracker.GetTop100();
-        Assert.Empty(top);
+        Assert.Equal(4, top.Length);
+        // Verify that digits are treated as words
+        var words = top.Select(t => t.Word).OrderBy(w => w).ToArray();
+        Assert.Contains("0", words);
+        Assert.Contains("123", words);
+        Assert.Contains("456", words);
+        Assert.Contains("789", words);
     }
 
     private static string ToLetterWord(string prefix, int n)
